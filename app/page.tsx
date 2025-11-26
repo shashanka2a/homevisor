@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from 'react';
+'use client'
+
+import { useState, useEffect } from 'react'
 import { 
   Home, 
   Scan, 
@@ -11,33 +13,39 @@ import {
   FileText,
   Menu,
   X,
-  ChevronRight,
   Database,
   Hammer,
   Sparkles,
   Zap,
   Lock
-} from 'lucide-react';
+} from 'lucide-react'
 
 // Custom Hook for Scroll Direction/Position
 const useScrollPosition = () => {
-  const [scrollPosition, setScrollPosition] = useState(0);
+  const [scrollPosition, setScrollPosition] = useState(0)
   useEffect(() => {
-    const updatePosition = () => setScrollPosition(window.scrollY);
-    window.addEventListener("scroll", updatePosition);
-    return () => window.removeEventListener("scroll", updatePosition);
-  }, []);
-  return scrollPosition;
-};
+    const updatePosition = () => setScrollPosition(window.scrollY)
+    window.addEventListener("scroll", updatePosition)
+    updatePosition()
+    return () => window.removeEventListener("scroll", updatePosition)
+  }, [])
+  return scrollPosition
+}
 
-const Button = ({ children, variant = 'primary', className = '', icon: Icon, ...props }) => {
-  const baseStyle = "group relative px-6 py-3 rounded-full font-medium transition-all duration-300 flex items-center justify-center gap-2 overflow-hidden";
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: 'primary' | 'secondary' | 'glow'
+  icon?: React.ComponentType<{ className?: string }>
+  children: React.ReactNode
+}
+
+const Button = ({ children, variant = 'primary', className = '', icon: Icon, ...props }: ButtonProps) => {
+  const baseStyle = "group relative px-6 py-3 rounded-full font-medium transition-all duration-300 flex items-center justify-center gap-2 overflow-hidden"
   
   const variants = {
     primary: "bg-slate-900 text-white hover:bg-slate-800 shadow-xl hover:shadow-2xl hover:-translate-y-0.5",
     secondary: "bg-white text-slate-900 border border-slate-200 hover:border-slate-300 hover:bg-slate-50",
     glow: "bg-indigo-600 text-white shadow-[0_0_20px_rgba(79,70,229,0.5)] hover:shadow-[0_0_30px_rgba(79,70,229,0.6)] hover:-translate-y-0.5"
-  };
+  }
 
   return (
     <button className={`${baseStyle} ${variants[variant]} ${className}`} {...props}>
@@ -46,10 +54,19 @@ const Button = ({ children, variant = 'primary', className = '', icon: Icon, ...
         {Icon && <Icon className="w-4 h-4 transition-transform group-hover:translate-x-1" />}
       </span>
     </button>
-  );
-};
+  )
+}
 
-const BentoCard = ({ children, className = "", title, subtitle, icon: Icon, dark = false }) => (
+interface BentoCardProps {
+  children?: React.ReactNode
+  className?: string
+  title: string
+  subtitle: string
+  icon?: React.ComponentType<{ className?: string }>
+  dark?: boolean
+}
+
+const BentoCard = ({ children, className = "", title, subtitle, icon: Icon, dark = false }: BentoCardProps) => (
   <div className={`relative overflow-hidden rounded-3xl p-8 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl ${
     dark ? 'bg-slate-900 text-white' : 'bg-white border border-slate-100 shadow-xl shadow-slate-200/50'
   } ${className}`}>
@@ -74,24 +91,24 @@ const BentoCard = ({ children, className = "", title, subtitle, icon: Icon, dark
       dark ? 'bg-indigo-500' : 'bg-blue-200'
     }`} />
   </div>
-);
+)
 
-export default function App() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const scrollPos = useScrollPosition();
-  const [email, setEmail] = useState('');
-  const [submitted, setSubmitted] = useState(false);
+export default function HomePage() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const scrollPos = useScrollPosition()
+  const [email, setEmail] = useState('')
+  const [submitted, setSubmitted] = useState(false)
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
     if (email) {
-      setSubmitted(true);
+      setSubmitted(true)
       setTimeout(() => {
-        setEmail('');
-        setSubmitted(false);
-      }, 3000);
+        setEmail('')
+        setSubmitted(false)
+      }, 3000)
     }
-  };
+  }
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] font-sans text-slate-900 selection:bg-indigo-500 selection:text-white overflow-x-hidden">
@@ -154,11 +171,11 @@ export default function App() {
           <div className="flex flex-col items-center text-center max-w-4xl mx-auto mb-16">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-slate-200 shadow-sm text-slate-600 text-sm font-medium mb-8 hover:scale-105 transition-transform cursor-default">
               <span className="flex h-2 w-2 rounded-full bg-indigo-500 animate-pulse"></span>
-              The "Chief of Staff" AI for your home
+              The &quot;Chief of Staff&quot; AI for your home
             </div>
             
             <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold tracking-tighter text-slate-900 mb-8 leading-[0.9]">
-              Don't Manage.<br/>
+              Don&apos;t Manage.<br/>
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 animate-gradient bg-300% italic pr-2">Just Live.</span>
             </h1>
             
@@ -270,7 +287,7 @@ export default function App() {
               <span className="text-slate-400">for your biggest asset.</span>
             </h2>
             <p className="text-lg text-slate-600 leading-relaxed">
-              Managing a home shouldn't feel like a second job. We've built the tooling professional property managers use, simplified for the single-family homeowner.
+              Managing a home shouldn&apos;t feel like a second job. We&apos;ve built the tooling professional property managers use, simplified for the single-family homeowner.
             </p>
           </div>
 
@@ -288,7 +305,7 @@ export default function App() {
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div className="bg-white/10 backdrop-blur-md border border-white/20 p-4 rounded-xl flex items-center gap-4 transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
                     <div className="bg-green-500 h-2 w-2 rounded-full animate-pulse"></div>
-                    <span className="text-white font-mono text-sm">Parsing... Found: "Sub-Zero BI-48S"</span>
+                    <span className="text-white font-mono text-sm">Parsing... Found: &quot;Sub-Zero BI-48S&quot;</span>
                   </div>
                 </div>
               </div>
@@ -315,7 +332,7 @@ export default function App() {
               className="md:col-span-3 md:row-span-2"
               dark={true}
               title="One-Click Dispatch"
-              subtitle="Found a leak? Don't explain it 5 times. We send the pro a work order with the exact make, model, and parts needed."
+              subtitle="Found a leak? Don&apos;t explain it 5 times. We send the pro a work order with the exact make, model, and parts needed."
               icon={Zap}
             >
                <div className="mt-6 flex flex-col gap-3">
@@ -333,7 +350,7 @@ export default function App() {
             {/* Feature 5: Resale Value */}
             <BentoCard 
               className="md:col-span-3 md:row-span-2 bg-indigo-50 border-indigo-100"
-              title="The 'Carfax' Effect"
+              title="The &apos;Carfax&apos; Effect"
               subtitle="Sell for a premium. Transfer the entire maintenance history to the new owner in one click."
               icon={ShieldCheck}
             >
@@ -490,5 +507,6 @@ export default function App() {
         </div>
       </footer>
     </div>
-  );
+  )
 }
+
