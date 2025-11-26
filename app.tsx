@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Home, 
   Scan, 
@@ -11,28 +11,74 @@ import {
   FileText,
   Menu,
   X,
-  ChevronDown,
+  ChevronRight,
   Database,
-  Hammer
+  Hammer,
+  Sparkles,
+  Zap,
+  Lock
 } from 'lucide-react';
 
-const Button = ({ children, variant = 'primary', className = '', ...props }) => {
-  const baseStyle = "px-6 py-3 rounded-lg font-semibold transition-all duration-200 flex items-center justify-center";
+// Custom Hook for Scroll Direction/Position
+const useScrollPosition = () => {
+  const [scrollPosition, setScrollPosition] = useState(0);
+  useEffect(() => {
+    const updatePosition = () => setScrollPosition(window.scrollY);
+    window.addEventListener("scroll", updatePosition);
+    return () => window.removeEventListener("scroll", updatePosition);
+  }, []);
+  return scrollPosition;
+};
+
+const Button = ({ children, variant = 'primary', className = '', icon: Icon, ...props }) => {
+  const baseStyle = "group relative px-6 py-3 rounded-full font-medium transition-all duration-300 flex items-center justify-center gap-2 overflow-hidden";
+  
   const variants = {
-    primary: "bg-indigo-600 text-white hover:bg-indigo-700 shadow-lg hover:shadow-indigo-500/30",
-    secondary: "bg-white text-gray-800 border border-gray-200 hover:border-gray-300 hover:bg-gray-50",
-    outline: "border-2 border-indigo-600 text-indigo-600 hover:bg-indigo-50"
+    primary: "bg-slate-900 text-white hover:bg-slate-800 shadow-xl hover:shadow-2xl hover:-translate-y-0.5",
+    secondary: "bg-white text-slate-900 border border-slate-200 hover:border-slate-300 hover:bg-slate-50",
+    glow: "bg-indigo-600 text-white shadow-[0_0_20px_rgba(79,70,229,0.5)] hover:shadow-[0_0_30px_rgba(79,70,229,0.6)] hover:-translate-y-0.5"
   };
 
   return (
     <button className={`${baseStyle} ${variants[variant]} ${className}`} {...props}>
-      {children}
+      <span className="relative z-10 flex items-center gap-2">
+        {children}
+        {Icon && <Icon className="w-4 h-4 transition-transform group-hover:translate-x-1" />}
+      </span>
     </button>
   );
 };
 
+const BentoCard = ({ children, className = "", title, subtitle, icon: Icon, dark = false }) => (
+  <div className={`relative overflow-hidden rounded-3xl p-8 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl ${
+    dark ? 'bg-slate-900 text-white' : 'bg-white border border-slate-100 shadow-xl shadow-slate-200/50'
+  } ${className}`}>
+    <div className="relative z-10 h-full flex flex-col">
+      <div className="flex items-start justify-between mb-6">
+        <div className={`p-3 rounded-2xl ${dark ? 'bg-slate-800 text-indigo-400' : 'bg-indigo-50 text-indigo-600'}`}>
+          {Icon && <Icon className="w-6 h-6" />}
+        </div>
+        {dark && <div className="px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-300 text-xs font-medium border border-indigo-500/30">New</div>}
+      </div>
+      
+      <div className="mt-auto">
+        <h3 className={`text-xl font-bold mb-2 ${dark ? 'text-white' : 'text-slate-900'}`}>{title}</h3>
+        <p className={`text-sm leading-relaxed ${dark ? 'text-slate-400' : 'text-slate-500'}`}>{subtitle}</p>
+      </div>
+      
+      {children}
+    </div>
+    
+    {/* Decorative Gradients */}
+    <div className={`absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full blur-3xl opacity-20 pointer-events-none ${
+      dark ? 'bg-indigo-500' : 'bg-blue-200'
+    }`} />
+  </div>
+);
+
 export default function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const scrollPos = useScrollPosition();
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
 
@@ -48,128 +94,164 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-white font-sans text-slate-900 selection:bg-indigo-100">
+    <div className="min-h-screen bg-[#F8FAFC] font-sans text-slate-900 selection:bg-indigo-500 selection:text-white overflow-x-hidden">
       
-      {/* Navigation */}
-      <nav className="fixed w-full bg-white/80 backdrop-blur-md z-50 border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16 items-center">
+      {/* Abstract Background Mesh */}
+      <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-purple-200/30 blur-[100px]" />
+        <div className="absolute top-[10%] right-[-10%] w-[30%] h-[30%] rounded-full bg-indigo-200/30 blur-[100px]" />
+        <div className="absolute bottom-[-10%] left-[20%] w-[30%] h-[30%] rounded-full bg-blue-200/30 blur-[100px]" />
+      </div>
+
+      {/* Floating Navigation */}
+      <nav className={`fixed top-6 left-0 right-0 z-50 transition-all duration-300 px-4`}>
+        <div className={`max-w-5xl mx-auto rounded-full transition-all duration-300 ${
+          scrollPos > 50 
+            ? 'bg-white/80 backdrop-blur-xl shadow-lg border border-white/20 py-3 px-6' 
+            : 'bg-transparent py-4 px-0'
+        }`}>
+          <div className="flex justify-between items-center">
             <div className="flex items-center gap-2">
-              <div className="bg-indigo-600 p-1.5 rounded-lg">
-                <Home className="h-6 w-6 text-white" />
+              <div className="bg-slate-900 p-1.5 rounded-lg rotate-3">
+                <Home className="h-5 w-5 text-white" />
               </div>
-              <span className="font-bold text-xl tracking-tight text-slate-900">Homevisor</span>
+              <span className="font-bold text-lg tracking-tight text-slate-900">Homevisor</span>
             </div>
             
-            <div className="hidden md:flex items-center space-x-8">
-              <a href="#how-it-works" className="text-gray-600 hover:text-indigo-600 font-medium">How it Works</a>
-              <a href="#features" className="text-gray-600 hover:text-indigo-600 font-medium">Features</a>
-              <a href="#pricing" className="text-gray-600 hover:text-indigo-600 font-medium">Pricing</a>
-              <Button variant="primary" className="py-2 px-4 text-sm">Get Early Access</Button>
+            <div className="hidden md:flex items-center gap-1 bg-white/50 p-1 rounded-full border border-slate-200/50 backdrop-blur-md">
+              <a href="#how-it-works" className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-slate-900 rounded-full hover:bg-white transition-all">How it Works</a>
+              <a href="#features" className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-slate-900 rounded-full hover:bg-white transition-all">Features</a>
+              <a href="#pricing" className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-slate-900 rounded-full hover:bg-white transition-all">Pricing</a>
             </div>
 
-            <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="md:hidden p-2 text-gray-600">
+            <div className="hidden md:block">
+              <Button variant="primary" className="py-2 px-5 text-sm !rounded-full">Get Early Access</Button>
+            </div>
+
+            <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="md:hidden p-2 text-slate-900">
               {isMenuOpen ? <X /> : <Menu />}
             </button>
           </div>
         </div>
-        
-        {/* Mobile Menu */}
-        {isMenuOpen && (
-          <div className="md:hidden bg-white border-t p-4 space-y-4 shadow-lg">
-            <a href="#how-it-works" className="block text-gray-600 font-medium" onClick={() => setIsMenuOpen(false)}>How it Works</a>
-            <a href="#features" className="block text-gray-600 font-medium" onClick={() => setIsMenuOpen(false)}>Features</a>
-            <a href="#pricing" className="block text-gray-600 font-medium" onClick={() => setIsMenuOpen(false)}>Pricing</a>
-            <Button className="w-full">Get Early Access</Button>
-          </div>
-        )}
       </nav>
 
+      {/* Mobile Menu Overlay */}
+      {isMenuOpen && (
+        <div className="fixed inset-0 z-40 bg-white pt-24 px-6 md:hidden animate-in fade-in slide-in-from-top-10">
+          <div className="flex flex-col gap-6 text-2xl font-medium">
+            <a href="#how-it-works" onClick={() => setIsMenuOpen(false)}>How it Works</a>
+            <a href="#features" onClick={() => setIsMenuOpen(false)}>Features</a>
+            <a href="#pricing" onClick={() => setIsMenuOpen(false)}>Pricing</a>
+            <hr className="border-gray-100" />
+            <Button className="w-full justify-center">Get Early Access</Button>
+          </div>
+        </div>
+      )}
+
       {/* Hero Section */}
-      <section className="pt-32 pb-20 lg:pt-40 lg:pb-32 overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 text-sm font-medium mb-6">
-                <span className="flex h-2 w-2 rounded-full bg-indigo-600 animate-pulse"></span>
-                The "Chief of Staff" AI for your home
-              </div>
-              <h1 className="text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 mb-6 leading-tight">
-                Stop managing your home. <br />
-                <span className="text-indigo-600">Start living in it.</span>
-              </h1>
-              <p className="text-xl text-gray-600 mb-8 max-w-lg leading-relaxed">
-                Homevisor bridges the gap between knowing what to do and getting it done. From leak detection to vendor dispatch, we automate the mental load of homeownership.
-              </p>
-              
-              <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 max-w-md">
+      <section className="relative pt-40 pb-20 lg:pt-52 lg:pb-32 z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col items-center text-center max-w-4xl mx-auto mb-16">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-slate-200 shadow-sm text-slate-600 text-sm font-medium mb-8 hover:scale-105 transition-transform cursor-default">
+              <span className="flex h-2 w-2 rounded-full bg-indigo-500 animate-pulse"></span>
+              The "Chief of Staff" AI for your home
+            </div>
+            
+            <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold tracking-tighter text-slate-900 mb-8 leading-[0.9]">
+              Don't Manage.<br/>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 animate-gradient bg-300% italic pr-2">Just Live.</span>
+            </h1>
+            
+            <p className="text-xl md:text-2xl text-slate-500 mb-10 max-w-2xl leading-relaxed font-light">
+              Homevisor bridges the gap between knowing what to do and getting it done. From leak detection to vendor dispatch.
+            </p>
+            
+            <form onSubmit={handleSubmit} className="relative w-full max-w-md mx-auto group">
+              <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
+              <div className="relative flex p-2 bg-white rounded-full shadow-xl">
                 <input 
                   type="email" 
-                  placeholder="Enter your email address" 
-                  className="flex-1 px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
+                  placeholder="Enter email for early access..." 
+                  className="w-full px-6 py-3 bg-transparent border-none outline-none text-slate-900 placeholder:text-slate-400"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
                 />
-                <Button type="submit">
-                  {submitted ? "You're on the list!" : "Join Waitlist"}
+                <Button type="submit" variant="primary" className="shrink-0 py-3 px-6">
+                  {submitted ? <CheckCircle2 className="w-5 h-5" /> : "Join Waitlist"}
                 </Button>
-              </form>
-              <p className="mt-4 text-sm text-gray-500 flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 text-green-500" /> No credit card required for beta
-              </p>
-            </div>
+              </div>
+            </form>
+          </div>
 
-            {/* Hero Visual/Dashboard Mockup */}
-            <div className="relative">
-              <div className="absolute -inset-4 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-2xl blur-2xl opacity-20 animate-pulse"></div>
-              <div className="relative bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden">
-                <div className="bg-gray-50 border-b border-gray-100 p-4 flex items-center justify-between">
+          {/* 3D Dashboard Preview */}
+          <div className="relative mt-20 perspective-1000">
+            <div className="relative max-w-5xl mx-auto transform rotate-x-12 hover:rotate-x-0 transition-transform duration-700 ease-out">
+              <div className="absolute inset-0 bg-indigo-600/20 blur-[100px] -z-10 rounded-full mix-blend-multiply"></div>
+              
+              <div className="bg-white rounded-2xl shadow-[0_50px_100px_-20px_rgba(50,50,93,0.25)] border border-slate-200/60 overflow-hidden ring-1 ring-slate-900/5">
+                {/* Mockup Header */}
+                <div className="bg-white/50 backdrop-blur-sm border-b border-slate-100 p-4 flex items-center gap-4">
                   <div className="flex gap-2">
-                    <div className="w-3 h-3 rounded-full bg-red-400"></div>
-                    <div className="w-3 h-3 rounded-full bg-yellow-400"></div>
-                    <div className="w-3 h-3 rounded-full bg-green-400"></div>
+                    <div className="w-3 h-3 rounded-full bg-slate-200"></div>
+                    <div className="w-3 h-3 rounded-full bg-slate-200"></div>
                   </div>
-                  <div className="text-xs font-medium text-gray-500">My Home Dashboard</div>
+                  <div className="h-6 w-64 bg-slate-100 rounded-lg animate-pulse"></div>
                 </div>
-                <div className="p-6 space-y-4">
-                  {/* Notification Card */}
-                  <div className="bg-indigo-50 border border-indigo-100 rounded-xl p-4 flex items-start gap-4">
-                    <div className="bg-white p-2 rounded-lg shadow-sm text-indigo-600">
-                      <CalendarClock className="h-5 w-5" />
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-slate-900">Maintenance Alert</h4>
-                      <p className="text-sm text-gray-600 mt-1">Water heater flush due. Last performed: Oct 2024.</p>
-                      <div className="mt-3 flex gap-2">
-                        <button className="text-xs bg-indigo-600 text-white px-3 py-1.5 rounded-md hover:bg-indigo-700">Book Pro</button>
-                        <button className="text-xs bg-white border border-gray-200 text-gray-700 px-3 py-1.5 rounded-md">View DIY Video</button>
-                      </div>
+
+                {/* Mockup Body */}
+                <div className="p-8 grid md:grid-cols-3 gap-8 bg-slate-50/50">
+                  {/* Column 1 */}
+                  <div className="space-y-4">
+                    <div className="bg-white p-5 rounded-xl shadow-sm border border-slate-100">
+                       <div className="flex justify-between items-center mb-4">
+                          <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-600"><Hammer className="w-5 h-5"/></div>
+                          <span className="text-xs font-bold text-orange-600 bg-orange-50 px-2 py-1 rounded-full">Urgent</span>
+                       </div>
+                       <h3 className="font-semibold text-slate-800">Roof Replacement</h3>
+                       <p className="text-xs text-slate-500 mt-1">Est. 2 years remaining</p>
+                       <div className="w-full bg-slate-100 h-1.5 rounded-full mt-3 overflow-hidden">
+                         <div className="bg-orange-500 w-[85%] h-full rounded-full"></div>
+                       </div>
                     </div>
                   </div>
-                  
-                  {/* Appliance List */}
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between p-3 border border-gray-100 rounded-lg hover:bg-gray-50 transition-colors">
-                      <div className="flex items-center gap-3">
-                        <div className="bg-gray-100 p-2 rounded-md"><Database className="h-4 w-4 text-gray-600" /></div>
-                        <div>
-                          <p className="text-sm font-medium">HVAC Unit</p>
-                          <p className="text-xs text-gray-500">Carrier 59TP6 • Filter: 20x25x1</p>
+
+                  {/* Column 2 (Main) */}
+                  <div className="col-span-1 md:col-span-2 space-y-4">
+                    <div className="bg-slate-900 text-white p-6 rounded-xl shadow-lg relative overflow-hidden group cursor-pointer">
+                      <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:scale-110 transition-transform duration-500">
+                        <Wrench size={100} />
+                      </div>
+                      <div className="relative z-10">
+                        <h4 className="text-indigo-300 text-sm font-medium mb-1">Active Work Order</h4>
+                        <h3 className="text-xl font-bold mb-4">Master Bath Leak</h3>
+                        <div className="flex items-center gap-4 text-sm text-slate-300 mb-6">
+                           <div className="flex items-center gap-2"><Smartphone size={16}/> Dispatched</div>
+                           <div className="w-1 h-1 bg-slate-500 rounded-full"></div>
+                           <div>Arriving 2:00 PM</div>
+                        </div>
+                        <div className="flex gap-2">
+                           <div className="bg-white/10 backdrop-blur-md px-3 py-1 rounded-lg text-xs border border-white/10">Delta Faucet #491</div>
+                           <div className="bg-white/10 backdrop-blur-md px-3 py-1 rounded-lg text-xs border border-white/10">O-Ring Kit Included</div>
                         </div>
                       </div>
-                      <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">Good Health</span>
                     </div>
-                    
-                    <div className="flex items-center justify-between p-3 border border-gray-100 rounded-lg hover:bg-gray-50 transition-colors">
-                      <div className="flex items-center gap-3">
-                        <div className="bg-gray-100 p-2 rounded-md"><Hammer className="h-4 w-4 text-gray-600" /></div>
-                        <div>
-                          <p className="text-sm font-medium">Roof</p>
-                          <p className="text-xs text-gray-500">Installed 2006 • 18 years old</p>
-                        </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="bg-white p-4 rounded-xl border border-slate-100 flex items-center gap-3">
+                         <div className="bg-green-100 p-2 rounded-lg text-green-600"><CheckCircle2 size={18}/></div>
+                         <div>
+                            <div className="text-sm font-semibold">HVAC Service</div>
+                            <div className="text-xs text-slate-500">Completed Oct 24</div>
+                         </div>
                       </div>
-                      <span className="text-xs bg-yellow-100 text-yellow-700 px-2 py-1 rounded-full">Budget for Replacement</span>
+                      <div className="bg-white p-4 rounded-xl border border-slate-100 flex items-center gap-3">
+                         <div className="bg-blue-100 p-2 rounded-lg text-blue-600"><FileText size={18}/></div>
+                         <div>
+                            <div className="text-sm font-semibold">Warranty Doc</div>
+                            <div className="text-xs text-slate-500">Dishwasher</div>
+                         </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -179,273 +261,231 @@ export default function App() {
         </div>
       </section>
 
-      {/* How It Works Section */}
-      <section id="how-it-works" className="py-20 bg-gray-50">
+      {/* Bento Grid Features Section */}
+      <section id="features" className="py-32 relative z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-slate-900">From Chaos to Autopilot</h2>
-            <p className="mt-4 text-gray-600 max-w-2xl mx-auto">
-              Homevisor isn't just a list. It's an active system that ingests data, plans your schedule, and executes repairs.
+          <div className="mb-20 max-w-3xl">
+            <h2 className="text-4xl md:text-5xl font-bold text-slate-900 tracking-tight mb-6">
+              The Operating System <br />
+              <span className="text-slate-400">for your biggest asset.</span>
+            </h2>
+            <p className="text-lg text-slate-600 leading-relaxed">
+              Managing a home shouldn't feel like a second job. We've built the tooling professional property managers use, simplified for the single-family homeowner.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8 relative">
-            {/* Connecting Line (Desktop) */}
-            <div className="hidden md:block absolute top-12 left-[16%] right-[16%] h-0.5 bg-gray-200 -z-10"></div>
-
-            {/* Step 1 */}
-            <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 relative group hover:-translate-y-1 transition-transform duration-300">
-              <div className="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mb-6 mx-auto border border-blue-100 group-hover:bg-blue-600 transition-colors">
-                <Scan className="h-8 w-8 text-blue-600 group-hover:text-white transition-colors" />
-              </div>
-              <h3 className="text-xl font-bold text-center mb-3">1. The Digital Twin</h3>
-              <p className="text-gray-600 text-center text-sm leading-relaxed">
-                Upload your inspection report or photos. Our AI creates a searchable inventory of every appliance, model number, and paint code.
-              </p>
-            </div>
-
-            {/* Step 2 */}
-            <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 relative group hover:-translate-y-1 transition-transform duration-300">
-              <div className="w-16 h-16 bg-purple-50 rounded-2xl flex items-center justify-center mb-6 mx-auto border border-purple-100 group-hover:bg-purple-600 transition-colors">
-                <CalendarClock className="h-8 w-8 text-purple-600 group-hover:text-white transition-colors" />
-              </div>
-              <h3 className="text-xl font-bold text-center mb-3">2. Auto-Maintenance</h3>
-              <p className="text-gray-600 text-center text-sm leading-relaxed">
-                No more guessing. We notify you when it's time to flush the heater or clean gutters, complete with budget forecasts for big replacements.
-              </p>
-            </div>
-
-            {/* Step 3 */}
-            <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 relative group hover:-translate-y-1 transition-transform duration-300">
-              <div className="w-16 h-16 bg-indigo-50 rounded-2xl flex items-center justify-center mb-6 mx-auto border border-indigo-100 group-hover:bg-indigo-600 transition-colors">
-                <Wrench className="h-8 w-8 text-indigo-600 group-hover:text-white transition-colors" />
-              </div>
-              <h3 className="text-xl font-bold text-center mb-3">3. One-Click Dispatch</h3>
-              <p className="text-gray-600 text-center text-sm leading-relaxed">
-                Found a leak? One click generates a work order with precise model numbers and sends it to a pro. They arrive with the right parts.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Feature Deep Dive / "The Problem" */}
-      <section id="features" className="py-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <div className="order-2 lg:order-1">
-              <div className="bg-slate-900 rounded-2xl p-8 shadow-2xl text-white relative overflow-hidden">
-                {/* Abstract UI representation of the 'Ticket' */}
-                <div className="space-y-6 relative z-10">
-                  <div className="flex justify-between items-center border-b border-gray-700 pb-4">
-                    <span className="text-gray-400 uppercase text-xs tracking-wider">Ticket #4921</span>
-                    <span className="bg-yellow-500/20 text-yellow-300 text-xs px-2 py-1 rounded">Open</span>
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-semibold">Leaking Garbage Disposal</h3>
-                    <p className="text-gray-400 text-sm mt-1">Kitchen Sink • Unit 1</p>
-                  </div>
-                  <div className="bg-slate-800 p-4 rounded-lg border border-slate-700">
-                    <p className="text-xs text-gray-500 uppercase mb-2">AI-Generated Tech Note</p>
-                    <p className="text-sm">
-                      Model: <span className="text-white font-mono">InSinkErator Badger 5</span>.<br/>
-                      Problem: Bottom seal failure detected.<br/>
-                      <span className="text-green-400">Action: Replacement unit 1/2 HP required.</span>
-                    </p>
-                  </div>
-                  <div className="flex gap-3">
-                     <button className="flex-1 bg-white text-slate-900 py-2 rounded-lg text-sm font-semibold flex items-center justify-center gap-2">
-                       <Smartphone className="h-4 w-4" /> Urban Company
-                     </button>
-                     <button className="flex-1 bg-transparent border border-gray-600 py-2 rounded-lg text-sm font-semibold hover:bg-slate-800">
-                       My Plumber
-                     </button>
-                  </div>
-                </div>
-                <div className="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-indigo-600 rounded-full blur-3xl opacity-30"></div>
-              </div>
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-6 gap-6 auto-rows-[minmax(180px,auto)]">
             
-            <div className="order-1 lg:order-2">
-              <h2 className="text-3xl font-bold text-slate-900 mb-6">The "Ticket System" for Homeowners</h2>
-              <p className="text-lg text-gray-600 mb-8">
-                In a commercial building, when something breaks, the manager doesn't google "plumbers near me" and hope for the best. They open a ticket.
-              </p>
-              
-              <div className="space-y-6">
-                <div className="flex gap-4">
-                  <div className="flex-shrink-0 mt-1">
-                    <CheckCircle2 className="h-6 w-6 text-indigo-600" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-slate-900">Vendor Agnostic</h4>
-                    <p className="text-gray-600 text-sm">Use our marketplace partners or bring your own trusted pros. We just provide the interface.</p>
-                  </div>
-                </div>
-                <div className="flex gap-4">
-                  <div className="flex-shrink-0 mt-1">
-                    <CheckCircle2 className="h-6 w-6 text-indigo-600" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-slate-900">Precise Work Orders</h4>
-                    <p className="text-gray-600 text-sm">We send the pro exact model numbers and serials before they drive over. No more "I need to go get a part" trips.</p>
-                  </div>
-                </div>
-                <div className="flex gap-4">
-                  <div className="flex-shrink-0 mt-1">
-                    <CheckCircle2 className="h-6 w-6 text-indigo-600" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-slate-900">Historical Data</h4>
-                    <p className="text-gray-600 text-sm">Every repair is logged. Warranties are tracked. You'll never lose a receipt again.</p>
+            {/* Feature 1: Digital Twin (Large) */}
+            <BentoCard 
+              className="md:col-span-4 md:row-span-2 bg-gradient-to-br from-white to-slate-50"
+              title="The Digital Twin"
+              subtitle="Upload your inspection report. Our AI automatically parses 100+ pages into a searchable digital inventory. Paint codes, model numbers, and warranties—instantly indexed."
+              icon={Scan}
+            >
+              <div className="mt-8 relative h-48 rounded-xl bg-slate-900 overflow-hidden border border-slate-800 group">
+                <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1556911220-bff31c812dba?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80')] opacity-40 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"></div>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="bg-white/10 backdrop-blur-md border border-white/20 p-4 rounded-xl flex items-center gap-4 transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
+                    <div className="bg-green-500 h-2 w-2 rounded-full animate-pulse"></div>
+                    <span className="text-white font-mono text-sm">Parsing... Found: "Sub-Zero BI-48S"</span>
                   </div>
                 </div>
               </div>
-            </div>
+            </BentoCard>
+
+            {/* Feature 2: Automated Schedule */}
+            <BentoCard 
+              className="md:col-span-2 md:row-span-1"
+              title="Auto-Pilot"
+              subtitle="We predict maintenance before things break. Budget forecasting included."
+              icon={CalendarClock}
+            />
+
+            {/* Feature 3: Vendor Agnostic */}
+            <BentoCard 
+              className="md:col-span-2 md:row-span-1"
+              title="Vendor Freedom"
+              subtitle="Bring your own plumber, or use our vetted marketplace."
+              icon={Lock}
+            />
+
+            {/* Feature 4: One Click Dispatch (Dark) */}
+            <BentoCard 
+              className="md:col-span-3 md:row-span-2"
+              dark={true}
+              title="One-Click Dispatch"
+              subtitle="Found a leak? Don't explain it 5 times. We send the pro a work order with the exact make, model, and parts needed."
+              icon={Zap}
+            >
+               <div className="mt-6 flex flex-col gap-3">
+                 <div className="bg-white/5 p-3 rounded-lg border border-white/10 flex justify-between items-center">
+                    <span className="text-sm text-slate-300">Sending Model #</span>
+                    <span className="font-mono text-green-400 text-sm">Sent</span>
+                 </div>
+                 <div className="bg-white/5 p-3 rounded-lg border border-white/10 flex justify-between items-center">
+                    <span className="text-sm text-slate-300">Checking Warranty</span>
+                    <span className="font-mono text-green-400 text-sm">Valid</span>
+                 </div>
+               </div>
+            </BentoCard>
+
+            {/* Feature 5: Resale Value */}
+            <BentoCard 
+              className="md:col-span-3 md:row-span-2 bg-indigo-50 border-indigo-100"
+              title="The 'Carfax' Effect"
+              subtitle="Sell for a premium. Transfer the entire maintenance history to the new owner in one click."
+              icon={ShieldCheck}
+            >
+              <div className="mt-6 flex items-center gap-4">
+                 <div className="flex-1 bg-white p-4 rounded-xl shadow-sm text-center border border-indigo-100">
+                    <div className="text-2xl font-bold text-slate-900">+5%</div>
+                    <div className="text-xs text-slate-500 uppercase tracking-wide mt-1">Value</div>
+                 </div>
+                 <div className="flex-1 bg-white p-4 rounded-xl shadow-sm text-center border border-indigo-100">
+                    <div className="text-2xl font-bold text-slate-900">2x</div>
+                    <div className="text-xs text-slate-500 uppercase tracking-wide mt-1">Faster Sale</div>
+                 </div>
+              </div>
+            </BentoCard>
+
           </div>
         </div>
       </section>
 
-      {/* The Carfax Value Prop */}
-      <section className="bg-indigo-900 py-24 text-white overflow-hidden relative">
-        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
-        <div className="max-w-4xl mx-auto px-4 text-center relative z-10">
-          <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full mb-8 border border-white/20">
-            <ShieldCheck className="h-5 w-5 text-green-400" />
-            <span className="font-medium">The Exit Strategy</span>
-          </div>
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">Build a "Carfax" for your Home</h2>
-          <p className="text-xl text-indigo-200 mb-10 leading-relaxed">
-            When you sell your car, service records add value. Why not your biggest asset? 
-            Transfer your Homevisor account to the new owner to prove your home was perfectly maintained.
-          </p>
-          <div className="flex flex-col sm:flex-row justify-center gap-4">
-             <div className="bg-white/10 backdrop-blur-md p-6 rounded-xl border border-white/10 flex-1">
-                <div className="text-3xl font-bold text-white mb-1">Higher</div>
-                <div className="text-indigo-200 text-sm">Resale Value</div>
-             </div>
-             <div className="bg-white/10 backdrop-blur-md p-6 rounded-xl border border-white/10 flex-1">
-                <div className="text-3xl font-bold text-white mb-1">Faster</div>
-                <div className="text-indigo-200 text-sm">Due Diligence</div>
-             </div>
-             <div className="bg-white/10 backdrop-blur-md p-6 rounded-xl border border-white/10 flex-1">
-                <div className="text-3xl font-bold text-white mb-1">Zero</div>
-                <div className="text-indigo-200 text-sm">Disputes</div>
-             </div>
-          </div>
+      {/* How it works - Horizontal Scroll / Steps */}
+      <section id="how-it-works" className="py-32 bg-slate-900 text-white relative overflow-hidden">
+        {/* Decorative Grid */}
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]"></div>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+           <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-6">
+              <div>
+                 <span className="text-indigo-400 font-mono mb-4 block">01 — 03</span>
+                 <h2 className="text-4xl md:text-5xl font-bold tracking-tight">The Workflow</h2>
+              </div>
+              <p className="text-slate-400 max-w-md text-lg">
+                Homevisor runs in the background. It only alerts you when action is needed, then handles the execution.
+              </p>
+           </div>
+
+           <div className="grid md:grid-cols-3 gap-8">
+              {[
+                {
+                  step: "01",
+                  title: "Ingest",
+                  desc: "We digitize your home. Upload photos or reports, we build the database.",
+                  icon: Database
+                },
+                {
+                  step: "02",
+                  title: "Monitor",
+                  desc: "Our algorithms track lifecycles and seasonal requirements automatically.",
+                  icon: Sparkles
+                },
+                {
+                  step: "03",
+                  title: "Resolve",
+                  desc: "When issues arise, we package the data and dispatch the solution.",
+                  icon: CheckCircle2
+                }
+              ].map((item, idx) => (
+                <div key={idx} className="group p-8 rounded-3xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors duration-300">
+                   <div className="w-12 h-12 bg-indigo-500/20 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                      <item.icon className="text-indigo-400 w-6 h-6" />
+                   </div>
+                   <div className="text-6xl font-bold text-white/5 mb-4 font-mono">{item.step}</div>
+                   <h3 className="text-2xl font-bold mb-3">{item.title}</h3>
+                   <p className="text-slate-400 leading-relaxed">{item.desc}</p>
+                </div>
+              ))}
+           </div>
         </div>
       </section>
 
-      {/* Pricing Section */}
-      <section id="pricing" className="py-24 bg-gray-50">
+      {/* Pricing Section - Minimalist */}
+      <section id="pricing" className="py-32 bg-[#F8FAFC]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-slate-900">Simple, Transparent Pricing</h2>
-            <p className="mt-4 text-gray-600">Start building your data moat for free.</p>
+            <h2 className="text-4xl font-bold text-slate-900 tracking-tight">Simple Pricing</h2>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
             {/* Free Tier */}
-            <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-200">
-              <h3 className="text-xl font-bold text-slate-900">Homevisor Lite</h3>
-              <div className="mt-4 flex items-baseline">
-                <span className="text-4xl font-extrabold text-slate-900">$0</span>
-                <span className="ml-1 text-gray-500">/forever</span>
+            <div className="bg-white p-10 rounded-3xl border border-slate-200 shadow-sm flex flex-col">
+              <div className="mb-8">
+                <h3 className="text-xl font-bold text-slate-900">Lite</h3>
+                <div className="mt-4 flex items-baseline gap-1">
+                  <span className="text-5xl font-bold text-slate-900 tracking-tighter">$0</span>
+                  <span className="text-slate-500">/forever</span>
+                </div>
+                <p className="mt-4 text-slate-500">Manual logging & document storage.</p>
               </div>
-              <p className="mt-4 text-gray-600 text-sm">Perfect for manually logging your inventory and building your home's history.</p>
-              
-              <ul className="mt-8 space-y-4">
-                <li className="flex items-center gap-3 text-sm text-gray-700">
-                  <CheckCircle2 className="h-5 w-5 text-green-500 flex-shrink-0" />
-                  Manual Inventory Logging
-                </li>
-                <li className="flex items-center gap-3 text-sm text-gray-700">
-                  <CheckCircle2 className="h-5 w-5 text-green-500 flex-shrink-0" />
-                  Digital Document Storage
-                </li>
-                <li className="flex items-center gap-3 text-sm text-gray-700">
-                  <CheckCircle2 className="h-5 w-5 text-green-500 flex-shrink-0" />
-                  Basic Maintenance Reminders
-                </li>
+              <ul className="space-y-4 mb-8 flex-1">
+                {['Manual Inventory', 'Document Cloud', 'Basic Reminders'].map((feat, i) => (
+                  <li key={i} className="flex items-center gap-3 text-slate-700">
+                    <CheckCircle2 className="w-5 h-5 text-slate-300" /> {feat}
+                  </li>
+                ))}
               </ul>
-              
-              <Button variant="secondary" className="w-full mt-8">Start for Free</Button>
+              <Button variant="secondary" className="w-full">Start Free</Button>
             </div>
 
             {/* Premium Tier */}
-            <div className="bg-white p-8 rounded-2xl shadow-xl border-2 border-indigo-600 relative overflow-hidden">
-              <div className="absolute top-0 right-0 bg-indigo-600 text-white text-xs font-bold px-3 py-1 rounded-bl-lg">RECOMMENDED</div>
-              <h3 className="text-xl font-bold text-slate-900">Chief of Staff</h3>
-              <div className="mt-4 flex items-baseline">
-                <span className="text-4xl font-extrabold text-slate-900">$15</span>
-                <span className="ml-1 text-gray-500">/month</span>
+            <div className="bg-slate-900 p-10 rounded-3xl shadow-2xl shadow-indigo-500/20 text-white flex flex-col relative overflow-hidden ring-4 ring-slate-900/5">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/20 blur-[80px] rounded-full -mr-16 -mt-16 pointer-events-none"></div>
+              
+              <div className="mb-8 relative z-10">
+                <div className="flex justify-between items-start">
+                  <h3 className="text-xl font-bold text-white">Chief of Staff</h3>
+                  <span className="bg-indigo-500 text-white text-[10px] uppercase font-bold px-2 py-1 rounded-full tracking-wider">Popular</span>
+                </div>
+                <div className="mt-4 flex items-baseline gap-1">
+                  <span className="text-5xl font-bold text-white tracking-tighter">$15</span>
+                  <span className="text-slate-400">/mo</span>
+                </div>
+                <p className="mt-4 text-slate-400">Full automation & concierge dispatch.</p>
               </div>
-              <p className="mt-4 text-gray-600 text-sm">Full automation. The concierge layer that handles the scheduling and dispatching.</p>
               
-              <ul className="mt-8 space-y-4">
-                <li className="flex items-center gap-3 text-sm text-slate-900 font-medium">
-                  <div className="bg-indigo-100 p-0.5 rounded-full"><CheckCircle2 className="h-4 w-4 text-indigo-600 flex-shrink-0" /></div>
-                  Everything in Lite
-                </li>
-                <li className="flex items-center gap-3 text-sm text-gray-700">
-                  <CheckCircle2 className="h-5 w-5 text-indigo-600 flex-shrink-0" />
-                  AI "Digital Twin" Parsing
-                </li>
-                <li className="flex items-center gap-3 text-sm text-gray-700">
-                  <CheckCircle2 className="h-5 w-5 text-indigo-600 flex-shrink-0" />
-                  One-Click Dispatch (Ticket System)
-                </li>
-                <li className="flex items-center gap-3 text-sm text-gray-700">
-                  <CheckCircle2 className="h-5 w-5 text-indigo-600 flex-shrink-0" />
-                  Transferable "Homefax" Account
-                </li>
+              <ul className="space-y-4 mb-8 flex-1 relative z-10">
+                {['AI Digital Twin Parsing', 'One-Click Dispatch', 'Transferable Account', 'Vendor Marketplace'].map((feat, i) => (
+                  <li key={i} className="flex items-center gap-3 text-slate-200">
+                    <CheckCircle2 className="w-5 h-5 text-indigo-400" /> {feat}
+                  </li>
+                ))}
               </ul>
-              
-              <Button variant="primary" className="w-full mt-8">Get Started</Button>
+              <Button variant="glow" className="w-full justify-center" icon={ArrowRight}>Get Started</Button>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-white border-t border-gray-100 py-12">
+      {/* Footer - Big Typography */}
+      <footer className="bg-slate-900 text-white pt-24 pb-12 border-t border-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div className="col-span-1 md:col-span-2">
-              <div className="flex items-center gap-2 mb-4">
-                <div className="bg-indigo-600 p-1 rounded-md">
-                  <Home className="h-5 w-5 text-white" />
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-20">
+             <h2 className="text-[12vw] leading-none font-bold tracking-tighter opacity-10 select-none">HOMEVISOR</h2>
+             <div className="mt-8 md:mt-0">
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="bg-white p-1 rounded-md">
+                    <Home className="h-5 w-5 text-slate-900" />
+                  </div>
+                  <span className="font-bold text-xl">Homevisor</span>
                 </div>
-                <span className="font-bold text-lg text-slate-900">Homevisor</span>
-              </div>
-              <p className="text-gray-500 text-sm max-w-xs">
-                The operating system for the modern home. 
-                We make homeownership as easy as renting, without the landlord.
-              </p>
-            </div>
-            
-            <div>
-              <h4 className="font-semibold text-slate-900 mb-4">Product</h4>
-              <ul className="space-y-2 text-sm text-gray-600">
-                <li><a href="#" className="hover:text-indigo-600">Features</a></li>
-                <li><a href="#" className="hover:text-indigo-600">Pricing</a></li>
-                <li><a href="#" className="hover:text-indigo-600">For Pros</a></li>
-                <li><a href="#" className="hover:text-indigo-600">Login</a></li>
-              </ul>
-            </div>
-            
-            <div>
-              <h4 className="font-semibold text-slate-900 mb-4">Company</h4>
-              <ul className="space-y-2 text-sm text-gray-600">
-                <li><a href="#" className="hover:text-indigo-600">About</a></li>
-                <li><a href="#" className="hover:text-indigo-600">Blog</a></li>
-                <li><a href="#" className="hover:text-indigo-600">Careers</a></li>
-                <li><a href="#" className="hover:text-indigo-600">Contact</a></li>
-              </ul>
-            </div>
+                <div className="flex gap-6 text-sm text-slate-400">
+                   <a href="#" className="hover:text-white transition-colors">Twitter</a>
+                   <a href="#" className="hover:text-white transition-colors">LinkedIn</a>
+                   <a href="#" className="hover:text-white transition-colors">Instagram</a>
+                </div>
+             </div>
           </div>
-          <div className="mt-12 pt-8 border-t border-gray-100 text-center text-sm text-gray-400">
-            © {new Date().getFullYear()} Homevisor Inc. All rights reserved.
+          
+          <div className="flex flex-col md:flex-row justify-between border-t border-slate-800 pt-8 text-sm text-slate-500">
+            <p>© {new Date().getFullYear()} Homevisor Inc.</p>
+            <div className="flex gap-8 mt-4 md:mt-0">
+               <a href="#" className="hover:text-white transition-colors">Privacy</a>
+               <a href="#" className="hover:text-white transition-colors">Terms</a>
+            </div>
           </div>
         </div>
       </footer>
