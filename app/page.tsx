@@ -171,16 +171,16 @@ export default function HomePage() {
           <div className="flex flex-col items-center text-center max-w-4xl mx-auto mb-16">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-slate-200 shadow-sm text-slate-600 text-sm font-medium mb-8 hover:scale-105 transition-transform cursor-default">
               <span className="flex h-2 w-2 rounded-full bg-indigo-500 animate-pulse"></span>
-              Your 24/7 Home Manager — Like a property manager, but for homeowners
+              Your 24/7 Home Manager. Like a property manager, built for homeowners.
             </div>
             
             <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold tracking-tighter text-slate-900 mb-8 leading-[0.9]">
-              Stop Being Your Own<br/>
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 animate-gradient bg-300% italic pr-2">General Contractor.</span>
+              Stop Coordinating.<br/>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 animate-gradient bg-300% italic pr-2">Start Delegating.</span>
             </h1>
             
             <p className="text-xl md:text-2xl text-slate-500 mb-10 max-w-2xl leading-relaxed font-light">
-              Homevisor is your single point of contact for everything home-related. We track your assets, forecast expenses, and coordinate all maintenance—transforming homeownership from expensive surprises into predictable, managed experiences.
+              Your single point of contact for everything home-related. We track assets, forecast expenses, and coordinate all maintenance. Transform homeownership from expensive surprises into predictable, managed experiences.
             </p>
             
             <form onSubmit={handleSubmit} className="relative w-full max-w-md mx-auto group">
@@ -291,7 +291,7 @@ export default function HomePage() {
               <span className="text-slate-400">Not Reactive Repairs.</span>
             </h2>
             <p className="text-lg text-slate-600 leading-relaxed">
-              Unlike directories that leave you to vet and coordinate, Homevisor manages everything. We track lifecycles, build sinking funds, and handle service coordination—so you can delegate, not DIY.
+              Unlike directories that leave you to vet and coordinate, Homevisor manages everything. We track lifecycles, build sinking funds, and handle service coordination so you can delegate, not DIY.
             </p>
           </div>
 
@@ -327,7 +327,7 @@ export default function HomePage() {
             <BentoCard 
               className="md:col-span-2 md:row-span-1"
               title="Predictive Maintenance"
-              subtitle="We forecast when systems will need attention—before they break. Annual inspections feed data back into lifecycle tracking, keeping your home health visible and budget predictable."
+              subtitle="We forecast when systems will need attention, before they break. Annual inspections feed data back into lifecycle tracking, keeping your home health visible and budget predictable."
               icon={CalendarClock}
             />
 
@@ -335,7 +335,7 @@ export default function HomePage() {
             <BentoCard 
               className="md:col-span-2 md:row-span-1"
               title="Managed Service Marketplace"
-              subtitle="We don&apos;t just pass leads. We manage booking, scheduling, and billing—from routine window washing to technical HVAC servicing. One point of contact, zero coordination headaches."
+              subtitle="We don&apos;t just pass leads. We manage booking, scheduling, and billing from routine window washing to technical HVAC servicing. One point of contact, zero coordination headaches."
               icon={Lock}
             />
 
@@ -344,7 +344,7 @@ export default function HomePage() {
               className="md:col-span-3 md:row-span-2"
               dark={true}
               title="Service Coordination"
-              subtitle="No more playing general contractor. We handle the entire service lifecycle—from identifying the issue to dispatching the right pro with complete context. Your asset database ensures they arrive with the right parts and knowledge."
+              subtitle="No more playing general contractor. We handle the entire service lifecycle from identifying the issue to dispatching the right pro with complete context. Your asset database ensures they arrive with the right parts and knowledge."
               icon={Zap}
             >
                <div className="mt-6 flex flex-col gap-3">
@@ -398,7 +398,7 @@ export default function HomePage() {
                  <h2 className="text-4xl md:text-5xl font-bold tracking-tight">How It Works</h2>
               </div>
               <p className="text-slate-400 max-w-md text-lg">
-                We become your single point of contact. Track assets, forecast expenses, coordinate services—all in one place. You delegate, we execute.
+                We become your single point of contact. Track assets, forecast expenses, coordinate services. All in one place. You delegate, we execute.
               </p>
            </div>
 
@@ -407,13 +407,13 @@ export default function HomePage() {
                 {
                   step: "01",
                   title: "Build Your Asset Database",
-                  desc: "Upload inspection reports or photos. We digitize your home—tracking every system, appliance, and component with age, condition, and warranty information.",
+                  desc: "Upload inspection reports or photos. We digitize your home, tracking every system, appliance, and component with age, condition, and warranty information.",
                   icon: Database
                 },
                 {
                   step: "02",
                   title: "Proactive Planning",
-                  desc: "We calculate lifecycle timelines and monthly sinking fund targets. See what&apos;s coming due in 5, 10, or 15 years—and start saving now.",
+                  desc: "We calculate lifecycle timelines and monthly sinking fund targets. See what&apos;s coming due in 5, 10, or 15 years, and start saving now.",
                   icon: Sparkles
                 },
                 {
