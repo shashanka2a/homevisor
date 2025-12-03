@@ -5,8 +5,8 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Homevisor - The "Chief of Staff" AI for your home',
-  description: 'Homevisor bridges the gap between knowing what to do and getting it done. From leak detection to vendor dispatch. Don\'t manage. Just live.',
+  title: 'Homevisor - Your 24/7 Home Manager | Single Point of Contact for Homeownership',
+  description: 'Stop being your own general contractor. Homevisor is your single point of contact—tracking assets, forecasting expenses, and coordinating all maintenance. Transform homeownership from expensive surprises into predictable, managed experiences.',
   keywords: ['home management', 'property management', 'home maintenance', 'AI home assistant', 'home automation', 'property maintenance', 'homevisor'],
   authors: [{ name: 'Homevisor Inc.' }],
   creator: 'Homevisor Inc.',
@@ -21,8 +21,8 @@ export const metadata: Metadata = {
     canonical: '/',
   },
   openGraph: {
-    title: 'Homevisor - The "Chief of Staff" AI for your home',
-    description: 'Homevisor bridges the gap between knowing what to do and getting it done. From leak detection to vendor dispatch.',
+    title: 'Homevisor - Your 24/7 Home Manager | Single Point of Contact',
+    description: 'Stop being your own general contractor. Proactive asset management, financial planning, and managed service coordination—all in one platform.',
     url: 'https://homevisor.com',
     siteName: 'Homevisor',
     locale: 'en_US',
@@ -30,8 +30,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Homevisor - The "Chief of Staff" AI for your home',
-    description: 'Homevisor bridges the gap between knowing what to do and getting it done. From leak detection to vendor dispatch.',
+    title: 'Homevisor - Your 24/7 Home Manager',
+    description: 'Stop being your own general contractor. Proactive asset management, financial planning, and managed service coordination.',
     creator: '@homevisor',
   },
   robots: {
