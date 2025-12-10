@@ -180,7 +180,7 @@ export default function HomePage() {
             </h1>
             
             <p className="text-xl md:text-2xl text-slate-500 mb-10 max-w-2xl leading-relaxed font-light">
-              Your single point of contact for everything home-related. We track assets, forecast expenses, and coordinate all maintenance. Transform homeownership from expensive surprises into predictable, managed experiences.
+              Your single point of contact for everything home-related. We track assets, forecast expenses, and coordinate all maintenance.
             </p>
             
             <form onSubmit={handleSubmit} className="relative w-full max-w-md mx-auto group">
